@@ -57,6 +57,12 @@ If `sourceURL` is specified, `downloadData("caribouNT_studyArea", "..")` may be 
 Description of the module outputs.
 
 
+|objectName   |objectClass              |desc                                                                                                                                                                                            |
+|:------------|:------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|sppColorVect |character                |species colours for plotting                                                                                                                                                                    |
+|sppEquiv     |data.table               |table of LandR species names equivalencies                                                                                                                                                      |
+|sppEquivCol  |character                |name of column to use in sppEquiv                                                                                                                                                               |
+|studyAreaPSP |SpatialPolygonsDataFrame |this area will be used to subset PSP plots before building the statistical model. Currently PSP datasets with repeat measures exist only for Saskatchewan, Alberta, and Boreal British Columbia |
 
 # Links to other modules
 
