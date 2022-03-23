@@ -23,7 +23,7 @@ Create study area objects required for running LandR-fireSense simulations for c
 Provide a summary of user-visible parameters.
 
 ```{r moduleParams, echo = FALSE, eval = TRUE}
-df_params <- moduleParams("caribouNT_studyArea", "..")
+df_params <- SpaDES.core::moduleParams("caribouNT_studyArea", "..")
 knitr::kable(df_params)
 ```
 
@@ -39,7 +39,7 @@ How to obtain input data, and a description of the data required by the module.
 If `sourceURL` is specified, `downloadData("caribouNT_studyArea", "..")` may be sufficient.
 
 ```{r moduleInputs, echo = FALSE, eval = TRUE}
-df_inputs <- moduleInputs("caribouNT_studyArea", "..")
+df_inputs <- SpaDES.core::moduleInputs("caribouNT_studyArea", "..")
 knitr::kable(df_inputs)
 ```
 
@@ -48,7 +48,7 @@ knitr::kable(df_inputs)
 Description of the module outputs.
 
 ```{r moduleOutputs, echo = FALSE}
-df_outputs <- moduleOutputs("caribouNT_studyArea", "..")
+df_outputs <- SpaDES.core::moduleOutputs("caribouNT_studyArea", "..")
 knitr::kable(df_outputs)
 ```
 
