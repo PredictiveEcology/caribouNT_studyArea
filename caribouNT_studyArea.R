@@ -1,6 +1,6 @@
 defineModule(sim, list(
   name = "caribouNT_studyArea",
-  description = paste("Prepares 2 sets of objects needed for LandR-fireSense simulations in the WBI:",
+  description = paste("Prepares 2 sets of objects needed for LandR-fireSense simulations in the Northwest Territories, Canada:",
                       "1. study areas and corresponding rasterToMatch (as well as large versions);",
                       "2. species equivalencies tables and the sppEquiv column;",
                       "Each is customized to the study area parameter passed as studyAreaName."),
@@ -8,7 +8,8 @@ defineModule(sim, list(
   authors = c(
     person("Ian", "Eddy", email = "ian.eddy@nrcan-rncan.gc.ca", role = "aut"),
     person("Alex M", "Chubaty", email = "achubaty@for-cast.ca", role = "aut"),
-    person("Eliot", "McIntire", email = "eliot.mcintire@nrcan-rncan.gc.ca", role = "ctb")
+    person("Eliot", "McIntire", email = "eliot.mcintire@nrcan-rncan.gc.ca", role = "ctb"),
+    person("Tati", "Micheletti", email = "tati.micheletti@gmail.com", role = "ctb")
   ),
   childModules = character(0),
   version = list(caribouNT_studyArea = "0.1.0"),
@@ -36,8 +37,8 @@ defineModule(sim, list(
                           "and time are not relevant")),
     defineParameter("bufferDist", "numeric", 20000, NA, NA,
                     "Distance (m) to buffer studyArea and rasterToMatch when creating 'Large' versions."),
-    defineParameter("studyAreaName", "character", "RIA", NA, NA,
-                    paste("One of 'AB', 'BC', 'MB', 'NT', 'SK', 'YT', or 'RIA'."))
+    defineParameter("studyAreaName", "character", "NT1", NA, NA,
+                    "One of 'NT1' or 'NT1_BCR6'.")
   ),
   inputObjects = bindrows(
     expectsInput("rasterToMatch", objectClass = "RasterLayer",
@@ -106,10 +107,7 @@ Init <- function(sim) {
   rm(sppEquivalencies_CA)
 
   ## studyArea-specific shapefiles and rasters
-  allowedStudyAreas <- "NT"
-
-  ## TODO: why isn't this saved? cache issue with .inputObjects??
-  mod$studyAreaNameLong <- "Northwest Territories & Nunavut"
+  allowedStudyAreas <- c("NT1")
 
   sim$studyArea$studyAreaName <- P(sim)$studyAreaName  # makes it a data.frame
 
@@ -173,7 +171,9 @@ Init <- function(sim) {
   mod$targetCRS <- paste("+proj=lcc +lat_1=49 +lat_2=77 +lat_0=0 +lon_0=-95",
                          "+x_0=0 +y_0=0 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0")
 
-  if (!suppliedElsewhere("studyArea", sim)) {
+  needStudyArea <- !suppliedElsewhere("studyArea", sim)
+
+  if (isTRUE(needStudyArea)) {
     #### Prep study-area specific objects ####
     ## when adding study areas, add relevant climate urls, rtm and sa, and don't forget R script prepSppEquiv
 
@@ -194,23 +194,43 @@ Init <- function(sim) {
                       useCache = P(sim)$.useCache) #%>%
     nwt <- canProvs[canProvs$NAME_1 %in% "Northwest Territories", ]
 
-    ## NT1 caribou management area
-    sim$studyArea <- prepInputs(
-      url = "https://drive.google.com/file/d/1AOfJmIzZqQvQWwC7fJWEkmXCj3y6uwWF/",
-      targetFile = "NT1_BOCA_spatial_units_for_landscape_projections.shp",
-      destinationPath = dPath,
-      alsoExtract = "similar"
-    )
-    sim$studyArea <- spTransform(sim$studyArea, mod$targetCRS)
+    if (P(sim)$studyAreaName == "NT1") {
+      ## NT1 caribou management area
+      sim$studyArea <- Cache(
+        prepInputs,
+        url = "https://drive.google.com/file/d/1AOfJmIzZqQvQWwC7fJWEkmXCj3y6uwWF/",
+        targetFile = "NT1_BOCA_spatial_units_for_landscape_projections.shp",
+        alsoExtract = "similar",
+        destinationPath = dPath,
+        omitArgs = "destinationPath"
+      )
+    } else if (P(sim)$studyAreaName == "NT1_BCR6") {
+      ## NT1 x BCR 6 intersection
+      sim$studyArea <- Cache(
+        prepInputs,
+        url = "https://drive.google.com/file/d/1RPfDeHujm-rUHGjmVs6oYjLKOKDF0x09/",
+        destinationPath = dPath,
+        omitArgs = "destinationPath"
+      )
+    }
+    sim$studyArea <- sim$studyArea %>%
+      st_transform(mod$targetCRS) %>%
+      st_union(by_feature = TRUE) %>%
+      as_Spatial(.) %>%
+      aggregate() %>%
+      spatialEco::remove.holes()
+    ## TODO: do we need to crop this to NT admin boundaries? small part extends into YT
   }
 
   if (!suppliedElsewhere("studyAreaReporting", sim)) {
     sim$studyAreaReporting <- sim$studyArea
   }
 
-  if (!suppliedElsewhere("studyArea", sim)) {
+  if (isTRUE(needStudyArea)) {
     ## NOTE: studyArea and studyAreaLarge are the same [buffered] area
-    sim$studyArea <- buffer(sim$studyArea, P(sim)$bufferDist)
+    sim$studyArea <- st_as_sf(sim$studyArea) %>%
+      st_buffer(P(sim)$bufferDist) %>%
+      as_Spatial()
   }
 
   if (!suppliedElsewhere("studyAreaLarge", sim)) {
