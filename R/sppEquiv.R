@@ -15,7 +15,13 @@ makeSppEquivWBI <- function(studyAreaName) {
     NT = c(FALSE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE,  FALSE, TRUE), ## run with NU, so needs to be same
     NU = c(FALSE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE,  FALSE, TRUE)  ## run with NT, so needs to be same
   )
-  sAN <- if (studyAreaName == "RIA") "BC" else studyAreaName
+  sAN <- if (studyAreaName == "RIA") {
+    "BC"
+  } else if (grepl("NT", studyAreaName)) {
+    "NT"
+  } else {
+    studyAreaName
+  }
 
   sppEquivSA <- sppEquiv[which(wbiSppToUse[, ..sAN][[1]]), ] ## subset per study area
 

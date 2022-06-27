@@ -104,7 +104,6 @@ Init <- function(sim) {
 
   sim$sppEquiv <- makeSppEquivWBI(studyAreaName)
   sim$sppEquivCol <- "LandR"
-  rm(sppEquivalencies_CA)
 
   ## studyArea-specific shapefiles and rasters
   allowedStudyAreas <- c("NT1")
@@ -229,6 +228,7 @@ Init <- function(sim) {
   if (isTRUE(needStudyArea)) {
     ## NOTE: studyArea and studyAreaLarge are the same [buffered] area
     sim$studyArea <- st_as_sf(sim$studyArea) %>%
+      st_convex_hull() %>%
       st_buffer(P(sim)$bufferDist) %>%
       as_Spatial()
   }
