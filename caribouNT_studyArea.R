@@ -112,7 +112,7 @@ Init <- function(sim) {
 
   ## Paired handles 12 colours so it is safer compared to Accent's 8 max
   sim$sppColorVect <- LandR::sppColors(sppEquiv = sim$sppEquiv, sppEquivCol = sim$sppEquivCol,
-                                       palette = "Paired")
+                                       palette = "Paired", newVals = "Mixed")
 
   stopifnot(getOption("reproducible.useNewDigestAlgorithm") == 2)
 
