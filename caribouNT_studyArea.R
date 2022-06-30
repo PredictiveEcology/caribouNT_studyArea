@@ -216,7 +216,7 @@ Init <- function(sim) {
       st_transform(mod$targetCRS) %>%
       st_union(by_feature = TRUE) %>%
       as_Spatial(.) %>%
-      aggregate() %>%
+      raster::aggregate() %>%
       spatialEco::remove.holes()
     ## TODO: do we need to crop this to NT admin boundaries? small part extends into YT
   }
