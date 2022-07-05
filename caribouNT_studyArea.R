@@ -116,6 +116,10 @@ Init <- function(sim) {
 
   stopifnot(getOption("reproducible.useNewDigestAlgorithm") == 2)
 
+  mod$WBstudyArea <- makeWBIstudyArea(destinationPath = dPath,
+                                      targetCRS = mod$targetCRS,
+                                      useCache = P(sim)$.useCache) ## TODO: test this !!
+
   ## only use ecozones in the WBI study area
   ecozonesToUse <- c(
     "Boreal Cordillera", "Boreal PLain", "Boreal Shield", "Hudson Plain",
