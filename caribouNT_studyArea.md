@@ -21,15 +21,15 @@ Create study area objects required for running LandR-fireSense simulations for c
 Provide a summary of user-visible parameters.
 
 
-|paramName        |paramClass |default |min |max |paramDesc                                                                                                                                                |
-|:----------------|:----------|:-------|:---|:---|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
-|.plotInitialTime |numeric    |NA      |NA  |NA  |Describes the simulation time at which the first plot event should occur.                                                                                |
-|.plotInterval    |numeric    |NA      |NA  |NA  |Describes the simulation time interval between plot events.                                                                                              |
-|.saveInitialTime |numeric    |NA      |NA  |NA  |Describes the simulation time at which the first save event should occur.                                                                                |
-|.saveInterval    |numeric    |NA      |NA  |NA  |This describes the simulation time interval between save events.                                                                                         |
-|.useCache        |logical    |FALSE   |NA  |NA  |Should this entire module be run with caching activated? This is generally intended for data-type modules, where stochasticity and time are not relevant |
-|bufferDist       |numeric    |20000   |NA  |NA  |Distance (m) to buffer studyArea and rasterToMatch when creating 'Large' versions.                                                                       |
-|studyAreaName    |character  |RIA     |NA  |NA  |One of 'AB', 'BC', 'MB', 'NT', 'SK', 'YT', or 'RIA'.                                                                                                     |
+|paramName        |paramClass |default |min |max |paramDesc                                                                                                                                                |cacheKey |
+|:----------------|:----------|:-------|:---|:---|:--------------------------------------------------------------------------------------------------------------------------------------------------------|:--------|
+|.plotInitialTime |numeric    |NA      |NA  |NA  |Describes the simulation time at which the first plot event should occur.                                                                                |TRUE     |
+|.plotInterval    |numeric    |NA      |NA  |NA  |Describes the simulation time interval between plot events.                                                                                              |TRUE     |
+|.saveInitialTime |numeric    |NA      |NA  |NA  |Describes the simulation time at which the first save event should occur.                                                                                |TRUE     |
+|.saveInterval    |numeric    |NA      |NA  |NA  |This describes the simulation time interval between save events.                                                                                         |TRUE     |
+|.useCache        |logical    |FALSE   |NA  |NA  |Should this entire module be run with caching activated? This is generally intended for data-type modules, where stochasticity and time are not relevant |TRUE     |
+|bufferDist       |numeric    |20000   |NA  |NA  |Distance (m) to buffer studyArea and rasterToMatch when creating 'Large' versions.                                                                       |TRUE     |
+|studyAreaName    |character  |NT1     |NA  |NA  |One of 'NT1' or 'NT1_BCR6'.                                                                                                                              |TRUE     |
 
 # Events
 
